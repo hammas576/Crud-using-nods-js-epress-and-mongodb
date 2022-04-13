@@ -16,11 +16,11 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/subscribers/6255303fef80639008d3e80d
+DELETE http://localhost:3000/subscribers/6255353f81211905ff3f5594
 
 ###
 
-PATCH http://localhost:3000/subscribers/6255303fef80639008d3e80d
+PATCH http://localhost:3000/subscribers/6255353f81211905ff3f5594
 Content-Type: application/json
 
 {

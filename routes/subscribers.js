@@ -3,6 +3,7 @@ const express = require("express");
 const subscriber = require("../models/subscriber");
 const router = express.Router();
 const Subscriber = require("../models/subscriber");
+const nodemailer = require("nodemailer");
 
 // getting all
 
@@ -31,7 +32,10 @@ router.post("/", async (req, res) => {
 
   try {
     const newsubscriber = await subscriber.save();
-    res.status(201).json(newsubscriber);
+    //res.status(201).json(newsubscriber);
+
+    //sending an email to new user on successful registeration
+    sendemails(req, res, newsubscriber.subscriberToChannel);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -78,6 +82,34 @@ async function findsubscriber(req, res, next) {
   }
   res.subscriber = subscriber;
   next();
+}
+
+async function sendemails(req, res, useremail) {
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "hammasdev576@gmail.com",
+      pass: "necrophos",
+    },
+  });
+
+  const msg = {
+    from: "hammasdev576@gmail.com", // sender address
+    to: `${useremail}`, // list of receivers
+    subject: "Sucessful registeration on CRUD", // Subject line
+    text: "Dear User you are successfully registred on CRUD", // plain text body
+  };
+
+  // send mail with defined transport object
+  const info = await transporter.sendMail(msg);
+
+  //console.log("Message sent: %s", info.messageId);
+  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+  // Preview only available when sending through an Ethereal account
+  //console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+  res.json({ message: "successfully sent " });
 }
 
 module.exports = router;
